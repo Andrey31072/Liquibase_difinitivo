@@ -1,0 +1,29 @@
+services:
+  postgres:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: Andre1234.
+      POSTGRES_DB: biblioteca
+    ports:
+      - "25433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  liquibase:
+    image: liquibase/liquibase
+    depends_on:
+      - postgres
+    volumes:
+      - .:/liquibase/changelog
+      - ./drivers:/liquibase/lib
+    command: >
+      --url=jdbc:postgresql://postgres:5432/biblioteca
+      --username=user
+      --password=Andre1234.
+      --changeLogFile=00-changelog.yaml
+      update
+
+volumes:
+  postgres_data:
